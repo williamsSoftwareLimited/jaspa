@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#eef" />
+    <link rel="icon" href="favicon.svg" type="image/x-icon">
+    <title>codebehind </title>
+    <script src='codebehind.js' defer></script>
+  </head>
+  <body>
+    <section>
+      <a href="page1">page1</a>
+      <a href="page2">page2</a>
+    </section>
+    <code-behind>here</code-behind>
+
+    <script>
+
+      const nav={
+        'page1': './page1.js',
+        'page2': './page2.js',
+      };
+      let modules={};
+
+
+      for(n in nav){
+        console.log(nav[n]);
+        
+        let i = 0;
+        let name=n;
+        import(nav[n]).then(module => {
+          //module.loadPageInto(document.querySelector('code-behind'));
+          //document.body.appendChild(module);
+          //[n]=module;
+          //console.log('module',module, nav[n]);
+          module['page']();
+          modules[name]={...module};
+        });
+        //import(nav[n]).page()
+
+      }
+
+      console.log(modules);
+      
+      navigation.addEventListener("navigate", event => {
+
+        console.log(event);
+
+        //cross-origin navs
+        if (!event.canIntercept) {
+          return;
+        }
+        // fragment navigations or downloads.
+        if (event.hashChange || event.downloadRequest !== null) {
+          return;
+        }
+
+        const url=new URL(event.destination.url);
+        console.log(url);
+        const name = url.pathname.replace("/","");
+        console.log(name);
+
+        event.intercept({
+          async handler() {
+            //const name = url.pathname.remove("\\");
+            //console.log(name);
+            const renderHtml = modules[name].page();
+            const cb = document.querySelector('code-behind');
+            cb.innerHTML = renderHtml;
+          }
+        }) // need to add the error handler
+
+      });
+
+    </script>
+
+</body>
+</html>
