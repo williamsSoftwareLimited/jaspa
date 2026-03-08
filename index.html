@@ -16,7 +16,8 @@
     <code-behind>here</code-behind>
 
     <script>
-
+      // have to leave this here for now as vite keeps causing an error
+      // the navigation api needs to be 'switch on' in Safari Settings->FeatureFlags
       // the nav is where each page to display
       // they (currently) need a function called page to operate
       // page receives a callback function thay does nothing so far
@@ -44,7 +45,7 @@
       console.log(modules);
       
 
-      // this is the navigation intceptor
+      // this is the navigation interceptor
       navigation.addEventListener("navigate", event => {
 
         console.log(event);
@@ -59,15 +60,15 @@
         }
 
         const url=new URL(event.destination.url);
-        console.log(url);
         const name = url.pathname.replace("/","");
-        console.log(name);
+        console.log(`url=${url}, name=${name}`);
 
         event.intercept({
           async handler() {
 
             const renderHtml = modules[name].page();
             const cb = document.querySelector('code-behind');
+            console.log(`renderHtml=${renderHtml}`);
             cb.innerHTML = renderHtml;
           }
         }) // need to add the error handler
