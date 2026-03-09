@@ -16,12 +16,27 @@
     <code-behind>here</code-behind>
 
     <script>
+      // handle event
+
+      let eventFn = null;
+
+      function clickEvents(){
+        console.log(`clickEvents`);
+
+        eventFn();
+      }
+
+    </script>
+
+    <script>
       // have to leave this here for now as vite keeps causing an error
-      // the navigation api needs to be 'switch on' in Safari Settings->FeatureFlags
+      // the navigation api needs to be 'switched on' in Safari Settings->FeatureFlags
       // the nav is where each page to display
       // they (currently) need a function called page to operate
       // page receives a callback function thay does nothing so far
       
+
+      // this is messy for the renderer to be called
       let render = {};
 
       import('./renderer.js').then(
@@ -64,9 +79,14 @@
         console.log(`url=${url}, name=${name}`);
 
         event.intercept({
+
           async handler() {
 
-            const renderHtml = modules[name].page();
+            const page = modules[name].page();
+
+            const renderHtml = page.render();
+            eventFn = page.events;
+
             const cb = document.querySelector('code-behind');
             console.log(`renderHtml=${renderHtml}`);
             cb.innerHTML = render(renderHtml);

@@ -1,6 +1,18 @@
 export function page(fn){
 	console.log('page 2 called');
-	return `<div>page2</div>`;	
+
+	function render(){
+		return `<div>page2</div>`;	
+	}
+
+	function events(){
+
+	}
+
+	return ({
+		render, events
+	});
+	
 }
 
 console.log('page 2 loaded');
